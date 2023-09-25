@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func GenerateAllPasswords() <-chan string {
+func GenerateAllPasswords() chan string {
 	var queue = make(chan string, 1000000)
 	go func() {
 		defer close(queue)

@@ -13,7 +13,7 @@ import (
 
 var logger = logging.GetSugar()
 
-func GenPasswdDict(dictPath string) <-chan string {
+func GenPasswdDict(dictPath string) chan string {
 	var queue = make(chan string, 1000000)
 	go func() {
 		defer close(queue)
@@ -54,12 +54,16 @@ func GenPasswdDict(dictPath string) <-chan string {
 	return queue
 }
 
-func WritePasswordFile(passwordFile string, queue <-chan string) (isFinish bool) {
+func WritePasswordFile(passwordFile string, queue chan string) (isFinish bool) {
 	queueLen := len(queue)
 	logger.Info(queueLen)
 	if queueLen == 0 {
-		isFinish = true
-		return
+		if val, ok := <-queue; !ok {
+			isFinish = true
+			return
+		} else {
+			queue <- val
+		}
 	}
 	if _, err := os.Stat(passwordFile); err == nil {
 		_ = os.RemoveAll(passwordFile)

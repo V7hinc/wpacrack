@@ -19,7 +19,7 @@ COPY --from=builder /app/crack_linux /app/crack_linux
 
 VOLUME /app/cap_file /app/wpa-dictionary
 
-RUN echo "/app/crack_linux dictCrack -c /app/cap_file -p /app/wpa-dictionary -k \$key" > /app/start.sh; \
+RUN echo "/app/crack_linux dictCrack -c /app/cap_file -p /app/wpa-dictionary -k \$key -b" > /app/start.sh; \
     cat /app/start.sh
 
 CMD ["sh", "/app/start.sh" ]
